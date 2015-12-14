@@ -1,12 +1,34 @@
-dependencies {
-    compile project(':zipkin-scrooge')
+apply plugin: 'idea'
+apply plugin: 'scala'
+apply from: 'gradle/scalatest.gradle'
 
-    compile "com.twitter:finagle-redis_${scalaInterfaceVersion}:${commonVersions.finagle}"
-    compile "com.twitter:util-logging_${scalaInterfaceVersion}:${commonVersions.twitterUtil}"
-    compile 'org.iq80.snappy:snappy:0.4'
+compileScala.scalaCompileOptions.additionalParameters = ['-feature']
+compileTestScala.scalaCompileOptions.additionalParameters = ['-feature']
+test.maxParallelForks = 1
 
-    // for SpanStoreSpec
-    testCompile project(':zipkin-common').sourceSets.test.output
+repositories {
+    jcenter()
+    maven { url 'https://repo.typesafe.com/typesafe/releases/' }
+    maven { url 'https://maven.twttr.com/' }
 }
 
-test.maxParallelForks = 1
+ext {
+    scalaVersion = '2.11.7'
+    scalaInterfaceVersion = '2.11'
+    zipkinVersion = '1.25.3'
+}
+
+dependencies {
+    compile "org.scala-lang:scala-library:${scalaVersion}"
+
+    compile "io.zipkin:zipkin-common:${zipkinVersion}"
+    compile "io.zipkin:zipkin-scrooge:${zipkinVersion}"
+    compile "com.twitter:finagle-redis_${scalaInterfaceVersion}:6.30.0" // make sure this matches dependency in zipkinVersion
+    compile "com.twitter:util-logging_${scalaInterfaceVersion}:6.29.0" // make sure this matches dependency in zipkinVersion
+    compile 'org.iq80.snappy:snappy:0.4'
+
+    testCompile 'junit:junit:4.12' // for org.junit.Ignore
+    testCompile "io.zipkin:zipkin-common:${zipkinVersion}:test"
+    testCompile "org.scalatest:scalatest_${scalaInterfaceVersion}:2.2.5"
+    testRuntime "org.slf4j:slf4j-simple:1.7.12"
+}
