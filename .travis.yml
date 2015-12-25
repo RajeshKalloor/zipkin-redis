@@ -16,3 +16,11 @@ cache:
     - $HOME/.gradle/caches/jars-1
     - $HOME/.gradle/caches/2.9
     - $HOME/.gradle/caches/modules-2
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/637e968b45032d16ee26
+    on_success: change
+    on_failure: always
+    on_start: false
